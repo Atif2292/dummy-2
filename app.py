@@ -50,9 +50,21 @@ def handle_exception(e):
     if isinstance(e, HTTPException):
         return jsonify(error=str(e)), e.code
     return jsonify(error="Internal server error"), 500
-@app.route('/')
-def home():
-    return "Backend is running!"
+@app.route('/', methods=['GET'])
+def api_docs():
+    
+    routes = []
+    for rule in app.url_map.iter_rules():
+        if rule.endpoint != 'static':
+            routes.append({
+                'endpoint': rule.endpoint,
+                'methods': list(rule.methods),
+                'path': str(rule)
+            })
+    return jsonify({
+        "message": "Available API endpoints",
+        "routes": routes
+    })
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
