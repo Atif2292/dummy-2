@@ -12,7 +12,7 @@ from sentence_transformers import SentenceTransformer, util
 from werkzeug.exceptions import HTTPException
 from flask_jwt_extended.exceptions import NoAuthorizationError, InvalidHeaderError
 app = Flask(__name__)
-CORS(app, supports_credentials=True,origins=["https://your-netlify-site.netlify.app"])
+CORS(app, supports_credentials=True,origins=["https://inreal-assign.netlify.app"])
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jobmatch.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
