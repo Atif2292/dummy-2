@@ -1,10 +1,7 @@
 # app.py
 from dotenv import load_dotenv
-from sentence_transformers import util  # make sure this is imported    
+from sentence_transformers import util  
 import os
-import openai 
-load_dotenv()  # this loads variables from .env file
-openai.api_key = os.getenv('OPENAI_API_KEY')
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -12,11 +9,10 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from sentence_transformers import SentenceTransformer, util
 
-
 from werkzeug.exceptions import HTTPException
 from flask_jwt_extended.exceptions import NoAuthorizationError, InvalidHeaderError
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
+CORS(app, supports_credentials=True,origins=["https://your-netlify-site.netlify.app"])
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jobmatch.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -25,7 +21,6 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 model = SentenceTransformer('all-MiniLM-L6-v2')
-openai.api_key = os.getenv('OPENAI_API_KEY')
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -104,12 +99,12 @@ def update_profile():
 @app.route('/api/jobs', methods=['GET'])
 @jwt_required()
 def get_jobs():
-    # 🔐 Optional: print auth token for debug
-    auth_header = request.headers.get('Authorization')
-    print("Authorization Header:", auth_header)
+    # DEBUG
+    # auth_header = request.headers.get('Authorization')
+    # print("Authorization Header:", auth_header)
 
     try:
-        # 🧠 Fetch all jobs
+        #  Fetch all jobs
         jobs = Job.query.all()
         print(f"Jobs fetched: {len(jobs)}")
 
@@ -148,7 +143,7 @@ def get_recommendations():
 
             similarity = util.pytorch_cos_sim(user_embedding, job_embedding).item()
 
-            # Adjust threshold as needed
+            # Adjust  as needed
             if similarity > 0.4:
                 matched_jobs.append({
                     'title': job.title,
